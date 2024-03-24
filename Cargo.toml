@@ -19,6 +19,7 @@ tower-http = { version = "0.5", features = ["fs"] }
 # -- Others
 strum_macros = "0.25"
 uuid = {version = "1", features = ["v4","fast-rng",]}
+chrono = "0.4"
 
 [dev-dependencies]
 anyhow = "1"
