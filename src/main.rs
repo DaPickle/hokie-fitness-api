@@ -9,21 +9,25 @@ use crate::{log::log_request, model::ModelController};
 
 pub use self::error::{Error, Result};
 
-pub mod web;
-pub mod error;
-pub mod model;
-pub mod log;
+mod config;
+
+mod web;
+mod error;
+mod model;
+mod log;
 
 #[cfg(test)]
 mod tests;
 
 #[tokio::main]
 async fn main() -> Result<()>{
+	let config = config::Config::new();
+
     let mc = ModelController::new();
 
     let routes_all = new_app(mc);
 
-    let listener = TcpListener::bind("127.0.0.1:8080").await.unwrap();
+    let listener = TcpListener::bind(&config.ip_address).await.unwrap();
 	println!("->> {:12} on {:?}\n", "LISTENING", listener.local_addr());
     
 	axum::serve(listener, routes_all.into_make_service()).await.unwrap();
