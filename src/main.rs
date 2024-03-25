@@ -29,7 +29,7 @@ async fn main() -> Result<()>{
 
     let routes_all = new_app(mc);
 
-	let ip = "127.0.0.1".parse::<IpAddr>().unwrap();
+	let ip = "0.0.0.0".parse::<IpAddr>().unwrap();
 
     let listener = TcpListener::bind(SocketAddr::new(ip, config.port)).await.unwrap();
 	println!("->> {:12} on {:?}\n", "LISTENING", listener.local_addr());
