@@ -1,24 +1,17 @@
-use serde::Deserialize;
+use crate::services::meal_calc::MealCalculator;
+use crate::{web::routes_main::CalorieCalcParams, Error, Result};
 
-use crate::{Error, Result};
-
-#[derive(Debug, Deserialize)]
-pub struct CalorieCalcParams {
-    activity: String,
-    gender: String,
-    height: f32,
-    weight: f32,
-    age: u8,
-}
+pub const FILE_NAME: &str = "./d2_database.csv";
 
 // region:      --- Model Controller
 #[derive(Clone)]
 pub struct ModelController {
+
 }
 
 impl ModelController {
     pub fn new() -> Self {
-        Self {  }
+        Self { }
     }
 }
 
@@ -30,6 +23,15 @@ impl ModelController {
         let calories = 862.0 - (9.72 * params.age as f32) + ((activity_multiplier)*((14.2 * params.weight) + (503.0 * params.height as f32)));
 
         Ok(calories)
+    }
+
+    pub async fn get_meal_plan(&self, protein: f64, carbs: f64, sodium: f64, calories: f64) -> Result<f64> {
+        let Ok(meal_calc) = MealCalculator::new(FILE_NAME, protein, carbs, sodium, calories).await
+        else {
+            return Err(Error::InvalidFile)
+        };
+
+        meal_calc.calculate_meal()
     }
 }
 

@@ -9,7 +9,10 @@ pub type Result<T> = core::result::Result<T, Error>;
 #[derive(Debug, Deserialize, Serialize, Clone, strum_macros::AsRefStr)]
 #[serde(tag = "type", content = "data")]
 pub enum Error {
-    InvalidArgument
+    InvalidArgument,
+    InvalidFile,
+    FileParseError,
+    ImpossibleSolution,
 }
 
 impl Display for Error {

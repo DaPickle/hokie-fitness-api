@@ -14,6 +14,7 @@ pub use self::error::{Error, Result};
 mod config;
 
 mod web;
+mod services;
 mod error;
 mod model;
 mod log;
@@ -25,7 +26,7 @@ mod tests;
 async fn main() -> Result<()>{
 	let config = config::Config::new();
 
-    let mc = ModelController::new();
+	let mc = ModelController::new();
 
     let routes_all = new_app(mc);
 

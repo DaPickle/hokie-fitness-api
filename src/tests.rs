@@ -40,4 +40,14 @@ async fn it_should_create_session_on_login() {
 
     println!();
     println!("{res:?}");
+
+    let res = server.get("/api/getmealplan").json(&json!({
+        "protein": 50.0, 
+        "carbs": 80.0, 
+        "sodium": 800.0, 
+        "calories": 800.0,
+    })).await;
+
+    println!();
+    println!("{res:?}");
 }
