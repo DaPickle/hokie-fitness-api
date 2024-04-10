@@ -12,7 +12,9 @@ pub enum Error {
     InvalidArgument,
     InvalidFile,
     FileParseError,
+    InvalidRecord,
     ImpossibleSolution,
+    InvalidAllergen,
 }
 
 impl Display for Error {

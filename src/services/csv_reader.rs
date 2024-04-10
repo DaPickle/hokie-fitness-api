@@ -10,13 +10,13 @@ pub struct CsvReader {
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Record {
-    item: String,
-    allergens: String,
-    serving_size: u32,
-    calories: f64,	
-    protein: f64,
-    carbs: f64,
-    sodium: f64,
+    pub item: String,
+    pub allergens: String,
+    pub serving_size: u32,
+    pub calories: f64,	
+    pub protein: f64,
+    pub carbs: f64,
+    pub sodium: f64,
 
 }
 
@@ -66,5 +66,9 @@ impl CsvReader {
 
     pub fn get_sodium(&self) -> Vec<f64> {
         self.records.iter().map(|record| record.sodium).collect::<Vec<f64>>()
+    }
+
+    pub fn get_record(&self, index: usize) -> Option<&Record> {
+        self.records.get(index)
     }
 }

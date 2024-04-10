@@ -1,8 +1,8 @@
-// use std::fmt::{Display, Formatter};
-
+use std::{fmt::{Display, Formatter}, str::FromStr};
+use serde::Serialize;
 use minilp::{LinearExpr, Problem, Solution, Variable};
 
-use super::csv_reader::CsvReader;
+use super::csv_reader::{CsvReader, Record};
 use crate::{Error, Result};
 
 pub struct MealCalculator {
@@ -13,38 +13,65 @@ pub struct MealCalculator {
     calories: f64,
 }
 
-// pub struct FoodItem {
-//     serving_size: u32,
-//     calories: u32,
-//     protein: u32,
-//     carbs: u32,
-//     sodium: u32,
-//     allergens: Vec<Allergens>
-// }
+#[derive(Serialize, Debug)]
+pub struct FoodItem {
+    pub name: String,
+    pub serving_size: u32,
+    pub count: u8,
+    pub calories: f64,
+    pub protein: f64,
+    pub carbs: f64,
+    pub sodium: f64,
+    pub allergens: Vec<Allergens>
+}
 
-// #[derive(Debug)]
-// pub enum Allergens {
-//     None,
-//     Milk,
-//     Eggs,
-//     Peanuts,
-//     Soybean,
-//     Wheat,
-//     TreeNut,
-//     Shellfish,
-//     Fish,
-//     Sesame,
-//     Vegan,
-//     Vegetarian,
-//     GlutenFree,
-//     LactoseIntolerance,
-// }
+#[derive(Serialize, Debug)]
+pub enum Allergens {
+    None,
+    Milk,
+    Eggs,
+    Peanuts,
+    Soybean,
+    Wheat,
+    TreeNut,
+    Shellfish,
+    Fish,
+    Sesame,
+    Vegan,
+    Vegetarian,
+    GlutenFree,
+    LactoseIntolerance,
+}
 
-// impl Display for Allergens {
-//     fn fmt(&self, fmt: &mut Formatter<'_>) -> std::fmt::Result {
-//         write!(fmt, "{self:?}")
-//     }
-// }
+impl Display for Allergens {
+    fn fmt(&self, fmt: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(fmt, "{self:?}")
+    }
+}
+
+impl FromStr for Allergens {
+    fn from_str(s: &str) -> Result<Self> {
+        match s {
+            "None" => Ok(Allergens::None),
+            "Milk" => Ok(Allergens::Milk),
+            "Eggs" => Ok(Allergens::Eggs),
+            "Peanuts" => Ok(Allergens::Peanuts),
+            "Soybean" => Ok(Allergens::Soybean),
+            "Wheat" => Ok(Allergens::Wheat),
+            "TreeNut" => Ok(Allergens::TreeNut),
+            "Shellfish" => Ok(Allergens::Shellfish),
+            "Fish" => Ok(Allergens::Fish),
+            "Sesame" => Ok(Allergens::Sesame),
+            "Vegan" => Ok(Allergens::Vegan),
+            "Vegetarian" => Ok(Allergens::Vegetarian),
+            "GlutenFree" => Ok(Allergens::GlutenFree),
+            "LactoseIntolerance" => Ok(Allergens::LactoseIntolerance),
+            _ => Err(Error::InvalidAllergen)
+        }
+    }
+
+    type Err = Error;
+}
 
 // region:      --- Meal Calculation
 impl MealCalculator {
@@ -60,16 +87,34 @@ impl MealCalculator {
 }
 
 impl MealCalculator {
-    pub fn calculate_meal(&self) -> Result<f64> {
+    pub fn calculate_meal(&self) -> Result<Vec<FoodItem>> {
         let solution = self.get_solution();
 
         match solution {
             Ok(sol) => {
-                sol.iter().for_each(|sol| {
-                    println!("{:?}: {}", sol.0, sol.1.round() as u32);
-                });
+                let valid_items = sol.iter().filter(| (_, value)| **value > 0.0).collect::<Vec<(Variable, &f64)>>();
 
-                Ok(sol.objective())
+                let meal: Vec<FoodItem> = valid_items.iter().map(|(var, value)| {
+                    let record: &Record = self.reader.get_record(var.idx()).unwrap();
+
+                    let allergens: Vec<Allergens> = record.allergens
+                        .split(',')
+                        .map(|allergen| allergen.trim().parse::<Allergens>().unwrap())
+                        .collect();
+
+                    FoodItem {
+                        name: record.item.clone(),
+                        serving_size: record.serving_size,
+                        count: **value as u8,
+                        calories: record.calories,
+                        protein: record.protein,
+                        carbs: record.carbs,
+                        sodium: record.sodium,
+                        allergens: allergens,
+                    }
+                }).collect();
+
+                Ok(meal)
             },
             Err(e) => {
                 return Err(e)
