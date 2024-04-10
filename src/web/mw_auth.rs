@@ -12,9 +12,9 @@ pub async fn mw_require_auth(
 
 	let auth = req.headers()
         .get("Authorization")
-        .ok_or(Error::InvalidArgument)?;
+        .ok_or(Error::InvalidAuthKey)?;
 
-    let auth_key = auth.to_str().map_err(|_| Error::InvalidArgument)?;
+    let auth_key = auth.to_str().map_err(|_| Error::InvalidAuthKey)?;
 
     let Ok(key) = std::env::var("AUTHORIZATION_KEY")
     else {

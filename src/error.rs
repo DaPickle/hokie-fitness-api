@@ -44,7 +44,7 @@ impl Error {
 		match self {
 			// -- Fallback.
             Error::NoAuthKey => {
-				(StatusCode::BAD_REQUEST, ClientError::NO_AUTH_KEY)
+				(StatusCode::INTERNAL_SERVER_ERROR, ClientError::NO_AUTH_KEY)
 			},
             Error::InvalidAuthKey => {
 				(StatusCode::BAD_REQUEST, ClientError::WRONG_AUTH_KEY)
