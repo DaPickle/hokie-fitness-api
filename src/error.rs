@@ -15,6 +15,8 @@ pub enum Error {
     InvalidRecord,
     ImpossibleSolution,
     InvalidAllergen,
+    NoAuthKey,
+    InvalidAuthKey,
 }
 
 impl Display for Error {
@@ -41,6 +43,12 @@ impl Error {
         #[allow(unreachable_patterns)]
 		match self {
 			// -- Fallback.
+            Error::NoAuthKey => {
+				(StatusCode::BAD_REQUEST, ClientError::NO_AUTH_KEY)
+			},
+            Error::InvalidAuthKey => {
+				(StatusCode::BAD_REQUEST, ClientError::WRONG_AUTH_KEY)
+			},
 			_ => (
 				StatusCode::INTERNAL_SERVER_ERROR,
 				ClientError::SERVICE_ERROR,
@@ -53,5 +61,7 @@ impl Error {
 #[derive(Debug, strum_macros::AsRefStr)]
 #[allow(non_camel_case_types)]
 pub enum ClientError {
-    SERVICE_ERROR
+    SERVICE_ERROR,
+    NO_AUTH_KEY,
+    WRONG_AUTH_KEY,
 }

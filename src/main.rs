@@ -41,7 +41,8 @@ async fn main() -> Result<()>{
 }
 
 pub(crate) fn new_app(mc: ModelController) -> Router {
-    let routes_apis = web::routes_main::routes(mc.clone());
+    let routes_apis = web::routes_main::routes(mc.clone())
+	.route_layer(middleware::from_fn(web::mw_auth::mw_require_auth));
 
     Router::new()
     .nest("/api", routes_apis)

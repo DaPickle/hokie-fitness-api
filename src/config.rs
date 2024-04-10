@@ -19,8 +19,9 @@ impl Config {
             Err(e) => panic!("${} is not set ({})", name, e)
         }
 
+
         Self {
-            port
+            port,
         }
     }
 }
