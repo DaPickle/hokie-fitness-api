@@ -73,6 +73,16 @@ impl FromStr for Allergens {
     type Err = Error;
 }
 
+#[derive(Serialize, Debug)]
+pub struct Meal {
+    items: Vec<FoodItem>,
+    total_calories: f64,
+    total_protein: f64,
+    total_carbs: f64,
+    total_sodium: f64,
+    total_grams: u32,
+}
+
 // region:      --- Meal Calculation
 impl MealCalculator {
     pub async fn new(file_name: &str, protein: f64, carbs: f64, sodium: f64, calories: f64) -> Result<Self> {
@@ -87,7 +97,7 @@ impl MealCalculator {
 }
 
 impl MealCalculator {
-    pub fn calculate_meal(&self) -> Result<Vec<FoodItem>> {
+    pub fn calculate_meal(&self) -> Result<Meal> {
         let solution = self.get_solution();
 
         match solution {
@@ -114,7 +124,14 @@ impl MealCalculator {
                     }
                 }).collect();
 
-                Ok(meal)
+                Ok(Meal {
+                    total_calories: meal.iter().map(|item| item.calories).sum(),
+                    total_protein: meal.iter().map(|item| item.protein).sum(),
+                    total_carbs: meal.iter().map(|item| item.carbs).sum(),
+                    total_sodium: meal.iter().map(|item| item.sodium).sum(),
+                    total_grams: sol.objective() as u32,
+                    items: meal,
+                })
             },
             Err(e) => {
                 return Err(e)

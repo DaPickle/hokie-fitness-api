@@ -4,9 +4,13 @@ use axum_test::TestServer;
 #[cfg(test)]
 use axum_test::TestServerConfig;
 
+use dotenv::dotenv;
+
 #[cfg(test)]
 async fn new_test_app() -> Result<TestServer> {
     use crate::{model::ModelController, new_app};
+
+    dotenv().ok();
 
     let mc = ModelController::new();
 
@@ -30,7 +34,7 @@ async fn it_should_create_session_on_login() {
         panic!("Womp Womp")
     };
 
-    let res = server.get("/api/calculateCalories").json(&json!({
+    let res = server.get("/api/calculateCalories").add_header("Authorization".parse().unwrap(), std::env::var("AUTHORIZATION_KEY").unwrap().parse().unwrap()).json(&json!({
         "activity": "moderate",
         "gender": "male",
         "height": 1.85928,
@@ -41,7 +45,7 @@ async fn it_should_create_session_on_login() {
     println!();
     println!("{res:?}");
 
-    let res = server.get("/api/getmealplan").json(&json!({
+    let res = server.get("/api/getmealplan").add_header("Authorization".parse().unwrap(), std::env::var("AUTHORIZATION_KEY").unwrap().parse().unwrap()).json(&json!({
         "protein": 50.0, 
         "carbs": 80.0, 
         "sodium": 800.0, 

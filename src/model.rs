@@ -1,4 +1,4 @@
-use crate::services::meal_calc::{FoodItem, MealCalculator};
+use crate::services::meal_calc::{Meal, MealCalculator};
 use crate::{web::routes_main::CalorieCalcParams, Error, Result};
 
 pub const FILE_NAME: &str = "./d2_database.csv";
@@ -25,7 +25,7 @@ impl ModelController {
         Ok(calories)
     }
 
-    pub async fn get_meal_plan(&self, protein: f64, carbs: f64, sodium: f64, calories: f64) -> Result<Vec<FoodItem>> {
+    pub async fn get_meal_plan(&self, protein: f64, carbs: f64, sodium: f64, calories: f64) -> Result<Meal> {
         let Ok(meal_calc) = MealCalculator::new(FILE_NAME, protein, carbs, sodium, calories).await
         else {
             return Err(Error::InvalidFile)
