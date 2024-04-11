@@ -49,6 +49,9 @@ impl Error {
             Error::InvalidAuthKey => {
 				(StatusCode::BAD_REQUEST, ClientError::WRONG_AUTH_KEY)
 			},
+            Error::ImpossibleSolution => {
+                (StatusCode::INTERNAL_SERVER_ERROR, ClientError::NO_SOLUTION)
+            },
 			_ => (
 				StatusCode::INTERNAL_SERVER_ERROR,
 				ClientError::SERVICE_ERROR,
@@ -64,4 +67,5 @@ pub enum ClientError {
     SERVICE_ERROR,
     NO_AUTH_KEY,
     WRONG_AUTH_KEY,
+    NO_SOLUTION,
 }
