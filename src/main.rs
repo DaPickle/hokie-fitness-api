@@ -53,7 +53,7 @@ pub(crate) fn new_app(mc: ModelController) -> Router {
 async fn main_response_mapper(
 	uri: Uri,
 	req_method: Method,
-	res: Response,
+	mut res: Response,
 ) -> Response {
 	println!("->> {:12} - main_response_mapper", "RES_MAPPER");
 	let uuid = Uuid::new_v4();
@@ -87,7 +87,11 @@ async fn main_response_mapper(
 		log_request(uuid, req_method, uri, service_error, client_error).await;
 
 	println!();
-	error_response.unwrap_or(res)
+	error_response.unwrap_or_else(|| {
+		res.headers_mut().append("Access-Control-Allow-Origin", "*".parse().unwrap());
+
+		res
+	})
 }
 
 fn routes_static() -> Router {
