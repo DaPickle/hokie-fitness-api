@@ -43,8 +43,8 @@ async fn main() -> Result<()>{
 pub(crate) fn new_app(mc: ModelController) -> Router {
 	let cors = CorsLayer::new()
     // allow `GET` and `POST` when accessing the resource
-    .allow_methods([Method::GET, Method::POST])
-	.allow_headers([AUTHORIZATION, CONTENT_TYPE])
+    .allow_methods(Any)
+	.allow_headers(Any)
     // allow requests from any origin
     .allow_origin(Any);
 
@@ -54,8 +54,8 @@ pub(crate) fn new_app(mc: ModelController) -> Router {
     Router::new()
     .nest("/api", routes_apis)
     .layer(middleware::map_response(main_response_mapper))
-	.layer(cors)
     .fallback_service(routes_static())
+	.layer(cors)
 }
 
 async fn main_response_mapper(
