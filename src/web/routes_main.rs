@@ -1,13 +1,13 @@
 use crate::{model::ModelController, Result};
 
-use axum::{extract::State, response::IntoResponse, routing::get, Json, Router};
+use axum::{extract::State, response::IntoResponse, routing::post, Json, Router};
 use serde::Deserialize;
 use serde_json::json;
 
 pub fn routes(mc: ModelController) -> Router {
     Router::new()
-        .route("/calculateCalories", get(calculate_calories))
-        .route("/getmealplan", get(get_meal_plan))
+        .route("/calculateCalories", post(calculate_calories))
+        .route("/getmealplan", post(get_meal_plan))
         .with_state(mc)
 }
 

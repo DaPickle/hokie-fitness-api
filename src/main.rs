@@ -1,6 +1,6 @@
 use std::net::{IpAddr, SocketAddr};
 
-use axum::{http::{header::{AUTHORIZATION, CONTENT_TYPE}, Method, Uri}, middleware, response::IntoResponse, routing::get_service, Json, Router};
+use axum::{http::{Method, Uri}, middleware, response::IntoResponse, routing::get_service, Json, Router};
 use axum::response::Response;
 use serde_json::json;
 use tokio::net::TcpListener;
@@ -88,7 +88,7 @@ async fn main_response_mapper(
 				(*status_code, Json(client_error_body)).into_response()
 			});
 
-	// Build and log the server log line.
+			// Build and log the server log line.
 	let client_error = client_status_error.unzip().1;
 	// TODO: Need to hander if log_request fail (but should not fail request)
 	let _ =
