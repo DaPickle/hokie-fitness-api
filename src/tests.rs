@@ -35,10 +35,10 @@ async fn it_should_create_session_on_login() {
     };
 
     let res = server.post("/api/calculateCalories").add_header("Authorization".parse().unwrap(), std::env::var("AUTHORIZATION_KEY").unwrap().parse().unwrap()).json(&json!({
-        "activity": "moderate",
+        "activity": "light",
         "gender": "male",
-        "height": 1.85928,
-        "weight": 74.3,
+        "height": 1.8,
+        "weight": 74,
         "age": 51,
     })).await;
 
@@ -46,10 +46,10 @@ async fn it_should_create_session_on_login() {
     println!("{res:?}");
 
     let res = server.post("/api/getmealplan").add_header("Authorization".parse().unwrap(), std::env::var("AUTHORIZATION_KEY").unwrap().parse().unwrap()).json(&json!({
-        "protein": 50.0, 
-        "carbs": 80.0, 
-        "sodium": 800.0, 
-        "calories": 800.0
+        "protein": 65.0, 
+        "carbs": 120.0, 
+        "sodium": 1000.0, 
+        "calories": 1200.0
     })).await;
 
     println!();
