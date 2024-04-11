@@ -140,11 +140,11 @@ impl MealCalculator {
     }
 
     fn get_solution(&self) -> Result<Solution> {
-        let mut problem = Problem::new(minilp::OptimizationDirection::Minimize);
+        let mut problem = Problem::new(minilp::OptimizationDirection::Maximize);
     
         // make a new var variable and flip the values of the serving sizes
 
-        let vars: Vec<Variable> = self.reader.get_serving_sizes().iter().map(|coef| problem.add_var((*coef) as f64, (0.0, f64::INFINITY))).collect();
+        let vars: Vec<Variable> = self.reader.get_calories().iter().map(|coef| problem.add_var((*coef) as f64, (0.0, f64::INFINITY))).collect();
 
         // calories constraint
         // takes the var and makes a tuple of (Variable, f64)
