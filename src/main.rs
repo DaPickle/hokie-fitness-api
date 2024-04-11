@@ -4,7 +4,7 @@ use axum::{http::{Method, Uri}, middleware, response::IntoResponse, routing::get
 use axum::response::Response;
 use serde_json::json;
 use tokio::net::TcpListener;
-use tower_http::services::ServeDir;
+use tower_http::{cors::{Any, CorsLayer}, services::ServeDir};
 use uuid::Uuid;
 
 use crate::{log::log_request, model::ModelController};
@@ -41,6 +41,12 @@ async fn main() -> Result<()>{
 }
 
 pub(crate) fn new_app(mc: ModelController) -> Router {
+	let cors = CorsLayer::new()
+    // allow `GET` and `POST` when accessing the resource
+    .allow_methods([Method::GET, Method::POST])
+    // allow requests from any origin
+    .allow_origin(Any);
+
     let routes_apis = web::routes_main::routes(mc.clone())
 	.route_layer(middleware::from_fn(web::mw_auth::mw_require_auth));
 
@@ -53,7 +59,7 @@ pub(crate) fn new_app(mc: ModelController) -> Router {
 async fn main_response_mapper(
 	uri: Uri,
 	req_method: Method,
-	mut res: Response,
+	res: Response,
 ) -> Response {
 	println!("->> {:12} - main_response_mapper", "RES_MAPPER");
 	let uuid = Uuid::new_v4();
@@ -88,8 +94,6 @@ async fn main_response_mapper(
 
 	println!();
 	error_response.unwrap_or_else(|| {
-		res.headers_mut().append("Access-Control-Allow-Origin", "*".parse().unwrap());
-
 		res
 	})
 }
