@@ -140,7 +140,7 @@ impl MealCalculator {
     }
 
     fn get_solution(&self) -> Result<Solution> {
-        let mut problem = Problem::new(minilp::OptimizationDirection::Maximize);
+        let mut problem = Problem::new(minilp::OptimizationDirection::Minimize);
     
         // make a new var variable and flip the values of the serving sizes
 
