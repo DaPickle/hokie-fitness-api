@@ -1,6 +1,6 @@
 use std::net::{IpAddr, SocketAddr};
 
-use axum::{http::{Method, Uri}, middleware, response::IntoResponse, routing::get_service, Json, Router};
+use axum::{http::{header::{AUTHORIZATION, CONTENT_TYPE}, Method, Uri}, middleware, response::IntoResponse, routing::get_service, Json, Router};
 use axum::response::Response;
 use serde_json::json;
 use tokio::net::TcpListener;
@@ -44,6 +44,7 @@ pub(crate) fn new_app(mc: ModelController) -> Router {
 	let cors = CorsLayer::new()
     // allow `GET` and `POST` when accessing the resource
     .allow_methods([Method::GET, Method::POST])
+	.allow_headers([AUTHORIZATION, CONTENT_TYPE])
     // allow requests from any origin
     .allow_origin(Any);
 
