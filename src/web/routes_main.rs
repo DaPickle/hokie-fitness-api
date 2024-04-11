@@ -21,7 +21,7 @@ pub struct CalorieCalcParams {
 }
 
 pub async fn calculate_calories(State(mc): State<ModelController>, Json(payload): Json<CalorieCalcParams>) -> Result<impl IntoResponse> {
-    println!("-->> {:12} - api_calculate_calories {payload:?}", "HANDLER");
+    println!("-->> {:12} - api_calculate_calories", "HANDLER");
 
     let calories = mc.calculate_calories(payload).await?;
 
