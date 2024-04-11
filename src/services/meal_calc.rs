@@ -125,10 +125,10 @@ impl MealCalculator {
                 }).collect();
 
                 Ok(Meal {
-                    total_calories: meal.iter().map(|item| item.calories).sum(),
-                    total_protein: meal.iter().map(|item| item.protein).sum(),
-                    total_carbs: meal.iter().map(|item| item.carbs).sum(),
-                    total_sodium: meal.iter().map(|item| item.sodium).sum(),
+                    total_calories: meal.iter().map(|item| item.calories * item.count as f64).sum(),
+                    total_protein: meal.iter().map(|item| item.protein * item.count as f64).sum(),
+                    total_carbs: meal.iter().map(|item| item.carbs * item.count as f64).sum(),
+                    total_sodium: meal.iter().map(|item| item.sodium * item.count as f64).sum(),
                     total_grams: sol.objective() as u32,
                     items: meal,
                 })
@@ -161,7 +161,7 @@ impl MealCalculator {
         let sodium_constraint: LinearExpr = vars.iter().zip(self.reader.get_sodium()).map(|(var, coef)| (*var, coef)).collect::<LinearExpr>();
 
         problem.add_constraint(calorie_constraint, minilp::ComparisonOp::Le, self.calories);
-        problem.add_constraint(protein_constraint, minilp::ComparisonOp::Ge, self.protein);
+        problem.add_constraint(protein_constraint, minilp::ComparisonOp::Le, self.protein);
         problem.add_constraint(carbs_constraint, minilp::ComparisonOp::Le, self.carbs);
         problem.add_constraint(sodium_constraint, minilp::ComparisonOp::Le, self.sodium);
 
