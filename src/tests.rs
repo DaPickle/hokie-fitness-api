@@ -48,7 +48,7 @@ async fn it_should_create_session_on_login() {
     let res = server.post("/api/getmealplan").add_header("Authorization".parse().unwrap(), std::env::var("AUTHORIZATION_KEY").unwrap().parse().unwrap()).json(&json!({
         "protein": 1.9, 
         "carbs": 23.5, 
-        "sodium": 0, 
+        "sodium": 1000, 
         "calories": 94,
     })).await;
 

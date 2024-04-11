@@ -102,7 +102,7 @@ impl MealCalculator {
 
         match solution {
             Ok(sol) => {
-                let valid_items = sol.iter().filter(| (_, value)| **value > 0.0).collect::<Vec<(Variable, &f64)>>();
+                let valid_items = sol.iter().filter(| (_, value)| **value >= 0.5).collect::<Vec<(Variable, &f64)>>();
 
                 let meal: Vec<FoodItem> = valid_items.iter().map(|(var, value)| {
                     let record: &Record = self.reader.get_record(var.idx()).unwrap();
@@ -115,7 +115,7 @@ impl MealCalculator {
                     FoodItem {
                         name: record.item.clone(),
                         serving_size: record.serving_size,
-                        count: **value as u8,
+                        count: (**value).round() as u8,
                         calories: record.calories,
                         protein: record.protein,
                         carbs: record.carbs,
