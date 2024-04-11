@@ -48,9 +48,9 @@ impl CsvReader {
 }
 
 impl CsvReader {
-    pub fn get_serving_sizes(&self) -> Vec<u32> {
-        self.records.iter().map(|record| record.serving_size).collect::<Vec<u32>>()
-    }
+    // pub fn get_serving_sizes(&self) -> Vec<u32> {
+    //     self.records.iter().map(|record| record.serving_size).collect::<Vec<u32>>()
+    // }
 
     pub fn get_calories(&self) -> Vec<f64> {
         self.records.iter().map(|record| record.calories).collect::<Vec<f64>>()

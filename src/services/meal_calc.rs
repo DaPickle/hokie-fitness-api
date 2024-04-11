@@ -64,7 +64,7 @@ impl FromStr for Allergens {
             "Sesame" => Ok(Allergens::Sesame),
             "Vegan" => Ok(Allergens::Vegan),
             "Vegetarian" => Ok(Allergens::Vegetarian),
-            "GlutenFree" => Ok(Allergens::GlutenFree),
+            "Gluten" => Ok(Allergens::GlutenFree),
             "LactoseIntolerance" => Ok(Allergens::LactoseIntolerance),
             _ => Err(Error::InvalidAllergen)
         }
@@ -161,7 +161,7 @@ impl MealCalculator {
         let sodium_constraint: LinearExpr = vars.iter().zip(self.reader.get_sodium()).map(|(var, coef)| (*var, coef)).collect::<LinearExpr>();
 
         problem.add_constraint(calorie_constraint, minilp::ComparisonOp::Le, self.calories);
-        problem.add_constraint(protein_constraint, minilp::ComparisonOp::Le, self.protein);
+        problem.add_constraint(protein_constraint, minilp::ComparisonOp::Ge, self.protein);
         problem.add_constraint(carbs_constraint, minilp::ComparisonOp::Le, self.carbs);
         problem.add_constraint(sodium_constraint, minilp::ComparisonOp::Le, self.sodium);
 
