@@ -53,6 +53,7 @@ pub(crate) fn new_app(mc: ModelController) -> Router {
     Router::new()
     .nest("/api", routes_apis)
     .layer(middleware::map_response(main_response_mapper))
+	.layer(cors)
     .fallback_service(routes_static())
 }
 
